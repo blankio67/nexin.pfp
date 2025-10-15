@@ -1,0 +1,14 @@
+{
+  "cd": {
+    "name": "cd",
+    "bio": "C++ developer and Minecraft plugin maker.",
+    "color": "#00bfff",
+    "avatar": "https://avatars.githubusercontent.com/u/000000?v=4"
+  },
+  "alex": {
+    "name": "alex",
+    "bio": "Frontend developer and UI designer.",
+    "color": "#ff4081",
+    "avatar": "https://avatars.githubusercontent.com/u/000001?v=4"
+  }
+}
