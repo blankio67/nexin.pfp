@@ -70,17 +70,10 @@
   .login-btn {
     background: linear-gradient(90deg, #8a5cf6, #6c5ce7);
   }
-  .login-btn:hover {
-    box-shadow: 0 0 10px rgba(108, 92, 231, 0.6);
-  }
   .signup-btn {
     background: linear-gradient(90deg, #3a3b3f, #5a5c60);
   }
-  .signup-btn:hover {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  }
 
-  /* Container and Cards */
   .container {
     max-width: 980px;
     margin: 120px auto 32px auto;
@@ -134,10 +127,7 @@
     padding: 12px;
     cursor: pointer;
     font-weight: 600;
-    transition: 0.2s;
-  }
-  .sidebar button:hover {
-    box-shadow: 0 0 10px rgba(108, 92, 231, 0.6);
+    margin-bottom: 10px;
   }
 
   .dashboard-content {
@@ -157,7 +147,6 @@
     text-align: center;
   }
 
-  /* Modal */
   .modal {
     display: none;
     position: fixed;
@@ -174,11 +163,12 @@
     border-radius: 16px;
     width: 320px;
     text-align: center;
-    animation: slide .25s ease;
   }
-  @keyframes slide {
-    from {transform: translateY(-30px);opacity: 0;}
-    to {transform: translateY(0);opacity: 1;}
+
+  footer {
+    text-align: center;
+    margin-top: 30px;
+    opacity: 0.7;
   }
 </style>
 </head>
@@ -277,7 +267,8 @@
     content.innerHTML=`
       <div class="dashboard-layout">
         <div class="sidebar">
-          <button onclick="renderDashboard('${u}')">⚔️ Main Dashboard</button><br><br>
+          <button onclick="renderDashboard('${u}')">⚔️ Main Dashboard</button>
+          <button onclick="viewMyPage('${u}')">🌐 View My Page</button>
           <button onclick="logout()">Logout</button>
         </div>
         <div class="dashboard-content">
@@ -308,6 +299,11 @@
     renderDashboard(u);
   }
 
+  function viewMyPage(u){
+    history.pushState({}, "", "/" + u);
+    route();
+  }
+
   function renderProfile(u){
     let users=getUsers();const d=users[u];
     if(!d){renderHome();return;}
@@ -320,7 +316,8 @@
         <a href="data:text/plain,Default CPP content" download="default.cpp">
           <button class="main">Download default.cpp</button>
         </a>
-      </div>`;
+      </div>
+      <footer>ran by nexin.fun</footer>`;
   }
 
   function route(){
