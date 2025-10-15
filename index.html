@@ -3,50 +3,108 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Custom Profiles — Front Page</title>
+  <title>Custom Profiles</title>
   <style>
-    :root{--accent:#6c5ce7;--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2}
-    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025 0%,#07132b 100%);color:#e6eef6}
-    .container{max-width:980px;margin:32px auto;padding:28px}
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between}
-    h1{margin:0;font-size:20px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:20px;border-radius:12px;box-shadow:0 6px 20px rgba(3,6,23,.6)}
-    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text],input[type=password],textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-    button{background:var(--accent);border:none;padding:10px 12px;border-radius:9px;color:white;cursor:pointer}
-    .small{font-size:13px;color:var(--muted)}
-    nav a{color:var(--muted);text-decoration:none;margin-left:12px}
-    .user-list{max-height:250px;overflow:auto;margin-top:8px}
-    .user-item{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-    .profile{padding:18px}
-    pre{background:#051022;padding:12px;border-radius:8px;overflow:auto}
-    .muted{color:var(--muted)}
-    .danger{background:#ff4d6d}
-    .pfp{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);margin-bottom:12px}
-    @media (max-width:900px){.grid{grid-template-columns:1fr;}.container{padding:18px}}
+    :root {
+      --accent:#6c5ce7;
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#9aa4b2;
+    }
+    * { box-sizing:border-box; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; }
+    html, body {
+      height:100%;
+      margin:0;
+      background:url("assets/background.png") center center/cover no-repeat fixed;
+      color:#e6eef6;
+    }
+
+    /* top bar */
+    header {
+      position:fixed;
+      top:12px;
+      left:50%;
+      transform:translateX(-50%);
+      width:90%;
+      max-width:1000px;
+      background:rgba(15,23,36,0.8);
+      backdrop-filter:blur(12px);
+      border-radius:18px;
+      padding:10px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 25px rgba(0,0,0,0.4);
+      z-index:1000;
+    }
+    header img {
+      position:absolute;
+      left:16px;
+      width:36px;
+      height:36px;
+      border-radius:50%;
+    }
+    header h1 {
+      font-size:20px;
+      margin:0;
+      color:white;
+    }
+
+    .container {
+      max-width:980px;
+      margin:120px auto 32px auto;
+      padding:28px;
+    }
+
+    .card {
+      background:rgba(11,18,32,0.85);
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(3,6,23,.6);
+    }
+
+    .grid { display:grid; grid-template-columns:1fr 360px; gap:18px; margin-top:18px; }
+    label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input[type=text], input[type=password], textarea {
+      width:100%; padding:10px; border-radius:8px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.05);
+      color:inherit;
+    }
+    button {
+      background:var(--accent);
+      border:none;
+      padding:10px 12px;
+      border-radius:9px;
+      color:white;
+      cursor:pointer;
+    }
+    .small { font-size:13px; color:var(--muted); }
+    .user-list { max-height:250px; overflow:auto; margin-top:8px; }
+    .user-item { padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.03);
+                 margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+    .profile { padding:18px; }
+    .pfp { width:80px; height:80px; border-radius:50%; object-fit:cover;
+           border:2px solid var(--accent); margin-bottom:12px; }
+    pre { background:rgba(5,16,34,0.8); padding:12px; border-radius:8px; overflow:auto; }
+    @media (max-width:900px) { .grid { grid-template-columns:1fr; } .container { padding:18px; } }
   </style>
 </head>
 <body>
-<div class="container">
+
 <header>
-  <div>
-    <h1>Custom Profiles</h1>
-    <div class="small">Create a small public profile and get <code>/&lt;username&gt;</code> — client-side demo (no server required)</div>
-  </div>
-  <nav>
-    <a href="#" id="homeLink">Home</a>
-    <a href="#" id="logoutLink" style="display:none">Logout</a>
-  </nav>
+  <img src="assets/logo.png" alt="Logo" />
+  <h1>Custom Profiles</h1>
 </header>
+
+<div class="container">
 <main id="app">
 
 <section id="home" class="card">
   <div class="grid">
     <div>
       <h2>Create account / Login</h2>
-      <p class="small">Pick a username (will appear in the path) and a password.</p>
+      <p class="small">Pick a username (your profile URL will be /username) and a password.</p>
       <label for="username">Username</label>
       <input id="username" type="text" placeholder="yourname" autocapitalize="off" />
       <label for="password">Password</label>
@@ -105,14 +163,21 @@
 </section>
 
 </main>
-<footer style="margin-top:18px;color:var(--muted);font-size:13px">Fully client-side profile demo. Profiles are stored locally in your browser.</footer>
+<footer style="margin-top:18px;color:var(--muted);font-size:13px">
+  Fully client-side profile demo. Profiles are stored locally in your browser.
+</footer>
 </div>
 
 <script>
 const sanitizeName = s => (s||'').toLowerCase().trim().replace(/[^a-z0-9-_]/g,'').slice(0,32);
 function saveUsers(obj){ localStorage.setItem('cp_users', JSON.stringify(obj)); }
 function loadUsers(){ try{ return JSON.parse(localStorage.getItem('cp_users')||'{}'); }catch(e){return{}}}
-const defaultCpp=`// default.cpp\n#include <iostream>\nint main(){\n std::cout<<"Hello from default.cpp!"<<std::endl;\n return 0;\n}`;
+const defaultCpp=`// default.cpp
+#include <iostream>
+int main(){
+ std::cout<<"Hello from default.cpp!"<<std::endl;
+ return 0;
+}`;
 
 const usernameIn=document.getElementById('username');
 const passwordIn=document.getElementById('password');
@@ -135,16 +200,24 @@ const pfpInput=document.getElementById('pfpInput');
 const profilePfp=document.getElementById('profilePfp');
 const saveProfileBtn=document.getElementById('saveProfileBtn');
 const cancelEdit=document.getElementById('cancelEdit');
-const logoutLink=document.getElementById('logoutLink');
-const homeLink=document.getElementById('homeLink');
 let session={user:null};
 
 function renderUserList(){
   const users=loadUsers();
-  userList.innerHTML=Object.keys(users).length?Object.keys(users).map(u=>`<div class="user-item"><span>/${u}</span><button data-u="${u}" class="visitBtn">Open</button></div>`).join(''):'<div class="small muted">No accounts yet</div>';
+  userList.innerHTML=Object.keys(users).length
+    ? Object.keys(users).map(u=>`<div class="user-item"><span>/${u}</span><button data-u="${u}" class="visitBtn">Open</button></div>`).join('')
+    : '<div class="small muted">No accounts yet</div>';
   document.querySelectorAll('.visitBtn').forEach(b=>b.addEventListener('click',e=>openProfile(e.target.dataset.u)));
 }
-function downloadFile(filename,text){const blob=new Blob([text],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();}
+function downloadFile(filename,text){
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
 
 function showProfile(user){
   const users=loadUsers();
@@ -157,11 +230,14 @@ function showProfile(user){
   cppPreview.textContent=u.cpp||defaultCpp;
   profilePfp.src=u.pfp||'https://via.placeholder.com/80';
   editorArea.style.display='none';
-  if(session.user===user){editProfileBtn.style.display='inline-block';logoutLink.style.display='inline-block';}else{editProfileBtn.style.display='none';logoutLink.style.display='none';}
   history.replaceState({page:'profile',user:user},'', '/'+user);
 }
 function openProfile(user){user=sanitizeName(user);showProfile(user);}
-function showHome(){home.style.display='block';profileView.style.display='none';logoutLink.style.display=session.user?'inline-block':'none';history.replaceState({page:'home'},'', '/');}
+function showHome(){
+  home.style.display='block';
+  profileView.style.display='none';
+  history.replaceState({page:'home'},'', '/');
+}
 
 signupBtn.addEventListener('click',()=>{
   const user=sanitizeName(usernameIn.value);
@@ -208,11 +284,23 @@ downloadCpp.addEventListener('click',()=>{
   const user=profileName.textContent.replace('/','');
   downloadFile('default.cpp',(users[user]&&users[user].cpp)?users[user].cpp:defaultCpp);
 });
-logoutLink.addEventListener('click',(e)=>{e.preventDefault();session.user=null;showHome();});
-homeLink.addEventListener('click',(e)=>{e.preventDefault();showHome();});
 
-window.addEventListener('popstate',(ev)=>{const s=ev.state||{};if(s.page==='profile'&&s.user)showProfile(s.user);else showHome();});
-(function init(){renderUserList();const path=location.pathname.replace(/^\//,'');if(path){const users=loadUsers();if(users[path])showProfile(path);else quickVisit.value=path;}})();
+window.addEventListener('popstate',(ev)=>{
+  const s=ev.state||{};
+  if(s.page==='profile'&&s.user)showProfile(s.user);
+  else showHome();
+});
+
+(function init(){
+  renderUserList();
+  const path=location.pathname.replace(/^\\//,'');
+  if(path){
+    const users=loadUsers();
+    if(users[path])showProfile(path);
+    else quickVisit.value=path;
+  }
+})();
 </script>
+
 </body>
 </html>
