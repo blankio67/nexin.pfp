@@ -1,306 +1,222 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Custom Profiles</title>
-  <style>
-    :root {
-      --accent:#6c5ce7;
-      --bg:#0f1724;
-      --card:#0b1220;
-      --muted:#9aa4b2;
-    }
-    * { box-sizing:border-box; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; }
-    html, body {
-      height:100%;
-      margin:0;
-      background:url("assets/background.png") center center/cover no-repeat fixed;
-      color:#e6eef6;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Custom Profiles</title>
+<style>
+  :root {
+    --accent:#6c5ce7;
+    --bg:#0f1724;
+    --card:#0b1220;
+    --muted:#9aa4b2;
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;}
+  html,body{
+    margin:0;height:100%;
+    background:url("assets/background.png") center center/cover no-repeat fixed;
+    color:#e6eef6;
+  }
 
-    /* top bar */
-    header {
-      position:fixed;
-      top:12px;
-      left:50%;
-      transform:translateX(-50%);
-      width:90%;
-      max-width:1000px;
-      background:rgba(15,23,36,0.8);
-      backdrop-filter:blur(12px);
-      border-radius:18px;
-      padding:10px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 8px 25px rgba(0,0,0,0.4);
-      z-index:1000;
-    }
-    header img {
-      position:absolute;
-      left:16px;
-      width:36px;
-      height:36px;
-      border-radius:50%;
-    }
-    header h1 {
-      font-size:20px;
-      margin:0;
-      color:white;
-    }
+  /* --- Top bar --- */
+  header{
+    position:fixed;top:12px;left:50%;transform:translateX(-50%);
+    width:90%;max-width:1000px;
+    background:rgba(15,23,36,0.85);backdrop-filter:blur(12px);
+    border-radius:18px;padding:10px 20px;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 25px rgba(0,0,0,0.4);z-index:1000;
+  }
+  header img{
+    position:absolute;left:16px;width:36px;height:36px;border-radius:50%;
+  }
+  header h1{font-size:20px;margin:0;color:white;}
+  .nav-buttons{position:absolute;right:16px;display:flex;gap:10px;}
+  .nav-buttons button{
+    padding:8px 14px;border:none;border-radius:18px;
+    cursor:pointer;color:white;font-weight:600;transition:all .2s ease;
+  }
+  .login-btn{background:linear-gradient(90deg,#8a5cf6,#6c5ce7);}
+  .login-btn:hover{box-shadow:0 0 10px rgba(108,92,231,0.6);}
+  .signup-btn{background:linear-gradient(90deg,#3a3b3f,#5a5c60);}
+  .signup-btn:hover{box-shadow:0 0 10px rgba(255,255,255,0.2);}
 
-    .container {
-      max-width:980px;
-      margin:120px auto 32px auto;
-      padding:28px;
-    }
-
-    .card {
-      background:rgba(11,18,32,0.85);
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 6px 20px rgba(3,6,23,.6);
-    }
-
-    .grid { display:grid; grid-template-columns:1fr 360px; gap:18px; margin-top:18px; }
-    label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
-    input[type=text], input[type=password], textarea {
-      width:100%; padding:10px; border-radius:8px;
-      border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.05);
-      color:inherit;
-    }
-    button {
-      background:var(--accent);
-      border:none;
-      padding:10px 12px;
-      border-radius:9px;
-      color:white;
-      cursor:pointer;
-    }
-    .small { font-size:13px; color:var(--muted); }
-    .user-list { max-height:250px; overflow:auto; margin-top:8px; }
-    .user-item { padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.03);
-                 margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
-    .profile { padding:18px; }
-    .pfp { width:80px; height:80px; border-radius:50%; object-fit:cover;
-           border:2px solid var(--accent); margin-bottom:12px; }
-    pre { background:rgba(5,16,34,0.8); padding:12px; border-radius:8px; overflow:auto; }
-    @media (max-width:900px) { .grid { grid-template-columns:1fr; } .container { padding:18px; } }
-  </style>
+  .container{max-width:980px;margin:120px auto 32px auto;padding:28px;}
+  .card{
+    background:rgba(11,18,32,0.85);padding:20px;border-radius:12px;
+    box-shadow:0 6px 20px rgba(3,6,23,.6);
+  }
+  input,textarea{
+    width:100%;padding:10px;border-radius:8px;margin-bottom:10px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.05);color:inherit;
+  }
+  button.main{
+    background:var(--accent);border:none;padding:10px 12px;
+    border-radius:9px;color:white;cursor:pointer;font-weight:600;
+  }
+  .pfp{width:80px;height:80px;border-radius:50%;object-fit:cover;
+       border:2px solid var(--accent);margin-bottom:12px;}
+  .profile{text-align:center;}
+  .modal{
+    display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.6);justify-content:center;align-items:center;
+    z-index:2000;
+  }
+  .modal-content{
+    background:rgba(11,18,32,0.95);padding:24px;border-radius:16px;
+    width:320px;text-align:center;animation:slide .25s ease;
+  }
+  @keyframes slide{from{transform:translateY(-30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+</style>
 </head>
 <body>
-
 <header>
-  <img src="assets/logo.png" alt="Logo" />
+  <img src="assets/logo.png" alt="Logo"/>
   <h1>Custom Profiles</h1>
+  <div class="nav-buttons" id="navBtns">
+    <button class="login-btn" onclick="openModal('loginModal')">Login</button>
+    <button class="signup-btn" onclick="openModal('signupModal')">Sign Up</button>
+  </div>
 </header>
 
-<div class="container">
-<main id="app">
+<div class="container" id="content"></div>
 
-<section id="home" class="card">
-  <div class="grid">
-    <div>
-      <h2>Create account / Login</h2>
-      <p class="small">Pick a username (your profile URL will be /username) and a password.</p>
-      <label for="username">Username</label>
-      <input id="username" type="text" placeholder="yourname" autocapitalize="off" />
-      <label for="password">Password</label>
-      <input id="password" type="password" placeholder="••••••" />
-      <label for="pfpUrl">Profile Picture URL</label>
-      <input id="pfpUrl" type="text" placeholder="https://example.com/avatar.png" />
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button id="signupBtn">Sign up</button>
-        <button id="loginBtn" style="background:transparent;border:1px solid rgba(255,255,255,0.06)">Log in</button>
-      </div>
-    </div>
-
-    <aside>
-      <div class="card">
-        <strong>Existing accounts</strong>
-        <div class="user-list" id="userList"></div>
-        <div style="margin-top:12px">
-          <label>Quick visit</label>
-          <input id="quickVisit" type="text" placeholder="username to open /username" />
-          <button id="openBtn" style="margin-top:8px">Open</button>
-        </div>
-      </div>
-    </aside>
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h2>Login</h2>
+    <input id="loginUser" placeholder="Username">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button class="main" onclick="login()">Login</button><br><br>
+    <button onclick="closeModal('loginModal')">Close</button>
   </div>
-</section>
+</div>
 
-<section id="profileView" class="card" style="display:none">
-  <div class="profile">
-    <img id="profilePfp" src="" class="pfp" />
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <h2 id="profileName">/username</h2>
-        <div class="small" id="profileBio">No bio yet</div>
-      </div>
-      <div>
-        <button id="editProfileBtn">Edit Profile</button>
-        <button id="downloadCpp">Download default.cpp</button>
-      </div>
-    </div>
-
-    <div id="editorArea" style="display:none;margin-top:12px">
-      <label for="bioInput">Bio / Description</label>
-      <textarea id="bioInput" rows="6" placeholder="Tell people a bit about you"></textarea>
-      <label for="pfpInput">Profile Picture URL</label>
-      <input id="pfpInput" type="text" />
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button id="saveProfileBtn">Save</button>
-        <button id="cancelEdit">Cancel</button>
-      </div>
-    </div>
-
-    <h3 style="margin-top:12px">Files</h3>
-    <div class="small">A default <code>default.cpp</code> is available for every account.</div>
-    <pre id="cppPreview" style="margin-top:8px;white-space:pre-wrap"></pre>
+<!-- SIGNUP MODAL -->
+<div id="signupModal" class="modal">
+  <div class="modal-content">
+    <h2>Sign Up</h2>
+    <input id="newUser" placeholder="Username">
+    <input id="newPass" type="password" placeholder="Password">
+    <input id="newPfp" placeholder="Profile Picture URL">
+    <textarea id="newBio" placeholder="Bio..."></textarea>
+    <button class="main" onclick="signup()">Create Account</button><br><br>
+    <button onclick="closeModal('signupModal')">Close</button>
   </div>
-</section>
-
-</main>
-<footer style="margin-top:18px;color:var(--muted);font-size:13px">
-  Fully client-side profile demo. Profiles are stored locally in your browser.
-</footer>
 </div>
 
 <script>
-const sanitizeName = s => (s||'').toLowerCase().trim().replace(/[^a-z0-9-_]/g,'').slice(0,32);
-function saveUsers(obj){ localStorage.setItem('cp_users', JSON.stringify(obj)); }
-function loadUsers(){ try{ return JSON.parse(localStorage.getItem('cp_users')||'{}'); }catch(e){return{}}}
-const defaultCpp=`// default.cpp
-#include <iostream>
-int main(){
- std::cout<<"Hello from default.cpp!"<<std::endl;
- return 0;
-}`;
+  const content=document.getElementById("content");
+  const navBtns=document.getElementById("navBtns");
 
-const usernameIn=document.getElementById('username');
-const passwordIn=document.getElementById('password');
-const pfpUrl=document.getElementById('pfpUrl');
-const signupBtn=document.getElementById('signupBtn');
-const loginBtn=document.getElementById('loginBtn');
-const userList=document.getElementById('userList');
-const openBtn=document.getElementById('openBtn');
-const quickVisit=document.getElementById('quickVisit');
-const profileView=document.getElementById('profileView');
-const home=document.getElementById('home');
-const profileName=document.getElementById('profileName');
-const profileBio=document.getElementById('profileBio');
-const cppPreview=document.getElementById('cppPreview');
-const downloadCpp=document.getElementById('downloadCpp');
-const editProfileBtn=document.getElementById('editProfileBtn');
-const editorArea=document.getElementById('editorArea');
-const bioInput=document.getElementById('bioInput');
-const pfpInput=document.getElementById('pfpInput');
-const profilePfp=document.getElementById('profilePfp');
-const saveProfileBtn=document.getElementById('saveProfileBtn');
-const cancelEdit=document.getElementById('cancelEdit');
-let session={user:null};
+  function openModal(id){document.getElementById(id).style.display="flex";}
+  function closeModal(id){document.getElementById(id).style.display="none";}
 
-function renderUserList(){
-  const users=loadUsers();
-  userList.innerHTML=Object.keys(users).length
-    ? Object.keys(users).map(u=>`<div class="user-item"><span>/${u}</span><button data-u="${u}" class="visitBtn">Open</button></div>`).join('')
-    : '<div class="small muted">No accounts yet</div>';
-  document.querySelectorAll('.visitBtn').forEach(b=>b.addEventListener('click',e=>openProfile(e.target.dataset.u)));
-}
-function downloadFile(filename,text){
-  const blob=new Blob([text],{type:'text/plain'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
+  function getUsers(){return JSON.parse(localStorage.getItem("users")||"{}");}
+  function saveUsers(u){localStorage.setItem("users",JSON.stringify(u));}
+  function currentUser(){return localStorage.getItem("currentUser");}
 
-function showProfile(user){
-  const users=loadUsers();
-  const u=users[user];
-  if(!u){alert('User not found');showHome();return;}
-  home.style.display='none';
-  profileView.style.display='block';
-  profileName.textContent='/' + user;
-  profileBio.textContent=u.bio||'No bio yet';
-  cppPreview.textContent=u.cpp||defaultCpp;
-  profilePfp.src=u.pfp||'https://via.placeholder.com/80';
-  editorArea.style.display='none';
-  history.replaceState({page:'profile',user:user},'', '/'+user);
-}
-function openProfile(user){user=sanitizeName(user);showProfile(user);}
-function showHome(){
-  home.style.display='block';
-  profileView.style.display='none';
-  history.replaceState({page:'home'},'', '/');
-}
-
-signupBtn.addEventListener('click',()=>{
-  const user=sanitizeName(usernameIn.value);
-  const pw=passwordIn.value;
-  const pfp=pfpUrl.value;
-  if(!user){alert('Invalid username');return;}
-  if(pw.length<4){alert('Password too short');return;}
-  const users=loadUsers();
-  if(users[user]){alert('Username taken');return;}
-  users[user]={password:pw,bio:'',cpp:defaultCpp,pfp:pfp};
-  saveUsers(users);
-  session.user=user;
-  renderUserList();
-  openProfile(user);
-});
-loginBtn.addEventListener('click',()=>{
-  const user=sanitizeName(usernameIn.value);
-  const pw=passwordIn.value;
-  const users=loadUsers();
-  if(!users[user]){alert('User not found');return;}
-  if(users[user].password!==pw){alert('Wrong password');return;}
-  session.user=user;
-  renderUserList();
-  openProfile(user);
-});
-openBtn.addEventListener('click',()=>{openProfile(quickVisit.value);});
-editProfileBtn.addEventListener('click',()=>{
-  editorArea.style.display='block';
-  const users=loadUsers();
-  bioInput.value=users[session.user].bio;
-  pfpInput.value=users[session.user].pfp||'';
-});
-cancelEdit.addEventListener('click',()=>{editorArea.style.display='none';});
-saveProfileBtn.addEventListener('click',()=>{
-  const users=loadUsers();
-  if(!session.user)return;
-  users[session.user].bio=bioInput.value;
-  users[session.user].pfp=pfpInput.value;
-  saveUsers(users);
-  showProfile(session.user);
-});
-downloadCpp.addEventListener('click',()=>{
-  const users=loadUsers();
-  const user=profileName.textContent.replace('/','');
-  downloadFile('default.cpp',(users[user]&&users[user].cpp)?users[user].cpp:defaultCpp);
-});
-
-window.addEventListener('popstate',(ev)=>{
-  const s=ev.state||{};
-  if(s.page==='profile'&&s.user)showProfile(s.user);
-  else showHome();
-});
-
-(function init(){
-  renderUserList();
-  const path=location.pathname.replace(/^\\//,'');
-  if(path){
-    const users=loadUsers();
-    if(users[path])showProfile(path);
-    else quickVisit.value=path;
+  function signup(){
+    const u=document.getElementById("newUser").value.trim();
+    const p=document.getElementById("newPass").value;
+    const pfp=document.getElementById("newPfp").value||"https://via.placeholder.com/80";
+    const bio=document.getElementById("newBio").value||"";
+    if(!u||!p)return alert("Enter username and password");
+    let users=getUsers();
+    if(users[u])return alert("Username exists!");
+    users[u]={password:p,pfp,bio};
+    saveUsers(users);
+    localStorage.setItem("currentUser",u);
+    closeModal("signupModal");
+    renderDashboard(u);
+    history.pushState({}, "", "/dashboard");
   }
-})();
-</script>
 
+  function login(){
+    const u=document.getElementById("loginUser").value.trim();
+    const p=document.getElementById("loginPass").value;
+    let users=getUsers();
+    if(users[u]&&users[u].password===p){
+      localStorage.setItem("currentUser",u);
+      closeModal("loginModal");
+      renderDashboard(u);
+      history.pushState({}, "", "/dashboard");
+    }else alert("Invalid credentials");
+  }
+
+  function logout(){
+    localStorage.removeItem("currentUser");
+    route();
+  }
+
+  function renderHome(){
+    navBtns.style.display="flex";
+    content.innerHTML=`
+      <div class="card">
+        <h2>Welcome to Custom Profiles!</h2>
+        <p>Create your own profile and customize it easily.</p>
+        <p>Sign Up or Login above to get started.</p>
+      </div>`;
+  }
+
+  function renderProfile(u){
+    let users=getUsers();const d=users[u];
+    if(!d){renderHome();return;}
+    navBtns.style.display="flex";
+    content.innerHTML=`
+      <div class="card profile">
+        <img class="pfp" src="${d.pfp}" alt="${u}">
+        <h2>@${u}</h2>
+        <p>${d.bio||"No bio yet."}</p>
+        <a href="data:text/plain,Default CPP content" download="default.cpp">
+          <button class="main">Download default.cpp</button>
+        </a>
+      </div>`;
+  }
+
+  function renderDashboard(u){
+    navBtns.style.display="none";
+    let users=getUsers();const d=users[u];
+    content.innerHTML=`
+      <div class="card">
+        <h2>Dashboard</h2>
+        <p>Welcome, <b>@${u}</b></p>
+        <img class="pfp" src="${d.pfp}" alt="pfp">
+        <br><br>
+        <label>Profile Picture URL</label>
+        <input id="editPfp" value="${d.pfp}">
+        <label>Bio</label>
+        <textarea id="editBio">${d.bio}</textarea>
+        <button class="main" onclick="saveProfile('${u}')">Save Changes</button>
+        <br><br>
+        <a href="data:text/plain,Default CPP content" download="default.cpp">
+          <button>Download default.cpp</button>
+        </a>
+        <br><br>
+        <button onclick="logout()">Logout</button>
+      </div>`;
+  }
+
+  function saveProfile(u){
+    let users=getUsers();
+    users[u].pfp=document.getElementById("editPfp").value;
+    users[u].bio=document.getElementById("editBio").value;
+    saveUsers(users);
+    alert("Profile saved!");
+    renderDashboard(u);
+  }
+
+  function route(){
+    const path=window.location.pathname.slice(1);
+    const user=currentUser();
+    if(path==="dashboard"&&user){renderDashboard(user);}
+    else if(path&&getUsers()[path]){renderProfile(path);}
+    else if(user){renderDashboard(user);}
+    else{renderHome();}
+  }
+  window.onpopstate=route;
+  route();
+</script>
 </body>
 </html>
