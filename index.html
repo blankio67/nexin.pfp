@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Custom Profiles — Front Page</title>
+  <style>
+    :root{--accent:#6c5ce7;--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025 0%,#07132b 100%);color:#e6eef6}
+    .container{max-width:980px;margin:32px auto;padding:28px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between}
+    h1{margin:0;font-size:20px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:20px;border-radius:12px;box-shadow:0 6px 20px rgba(3,6,23,.6)}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=text],input[type=password],textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    button{background:var(--accent);border:none;padding:10px 12px;border-radius:9px;color:white;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    nav a{color:var(--muted);text-decoration:none;margin-left:12px}
+    .user-list{max-height:250px;overflow:auto;margin-top:8px}
+    .user-item{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+    .profile{padding:18px}
+    pre{background:#051022;padding:12px;border-radius:8px;overflow:auto}
+    .muted{color:var(--muted)}
+    .danger{background:#ff4d6d}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.container{padding:18px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Custom Profiles</h1>
+        <div class="small">Create a small public profile and get <code>/&lt;username&gt;</code> — client-side demo (no server required)</div>
+      </div>
+      <nav>
+        <a href="#" id="homeLink">Home</a>
+        <a href="#" id="logoutLink" style="display:none">Logout</a>
+      </nav>
+    </header>
+
+    <main id="app">
+      <!-- Home / Signup / Login -->
+      <section id="home" class="card">
+        <div class="grid">
+          <div>
+            <h2>Create account / Login</h2>
+            <p class="small">Pick a username (will appear in the path) and a password. This demo stores accounts in your browser localStorage only.</p>
+
+            <div style="margin-top:12px">
+              <label for="username">Username</label>
+              <input id="username" type="text" placeholder="yourname" autocapitalize="off" />
+            </div>
+            <div style="margin-top:12px">
+              <label for="password">Password</label>
+              <input id="password" type="password" placeholder="••••••" />
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button id="signupBtn">Sign up</button>
+              <button id="loginBtn" style="background:transparent;border:1px solid rgba(255,255,255,0.06)">Log in</button>
+            </div>
+
+            <div class="small" style="margin-top:10px">Tip: usernames are lowercase letters, numbers, dash/underscore. Example: <code>alice</code>, <code>cool_user</code></div>
+          </div>
+
+          <aside>
+            <div class="card">
+              <strong>Existing accounts</strong>
+              <div class="user-list" id="userList"></div>
+              <div style="margin-top:12px">
+                <label>Quick visit</label>
+                <input id="quickVisit" type="text" placeholder="username to open /username" />
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <button id="openBtn">Open</button>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Profile view -->
+      <section id="profileView" class="card" style="display:none">
+        <div class="profile">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2 id="profileName">/username</h2>
+              <div class="small" id="profileBio">No bio yet</div>
+            </div>
+            <div>
+              <button id="editProfileBtn">Edit Profile</button>
+              <button id="downloadCpp">Download default.cpp</button>
+            </div>
+          </div>
+
+          <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+          <div id="editorArea" style="display:none">
+            <label for="bioInput">Bio / Description</label>
+            <textarea id="bioInput" rows="6" placeholder="Tell people a bit about you"></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="saveProfileBtn">Save</button>
+              <button id="cancelEdit">Cancel</button>
+            </div>
+          </div>
+
+          <h3 style="margin-top:12px">Files</h3>
+          <div class="small">A default <code>default.cpp</code> is available for every account.</div>
+          <pre id="cppPreview" style="margin-top:8px;white-space:pre-wrap"></pre>
+        </div>
+      </section>
+
+    </main>
+
+    <footer style="margin-top:18px;color:var(--muted);font-size:13px">This is a client-side demo. If you want real server-backed accounts, I'll add a Node/Express or Firebase example on request.</footer>
+  </div>
+
+  <script>
+    // ----------------
+    // Utilities
+    // ----------------
+    const sanitizeName = (s) => (s || '').toLowerCase().trim().replace(/[^a-z0-9-_]/g,'').slice(0,32);
+
+    function saveUsers(obj){ localStorage.setItem('cp_users', JSON.stringify(obj)); }
+    function loadUsers(){ try { return JSON.parse(localStorage.getItem('cp_users')||'{}'); } catch(e){ return {}; } }
+
+    async function hashPass(pass){
+      const enc = new TextEncoder();
+      const data = enc.encode(pass);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // default.cpp content (same for every user initially)
+    const defaultCpp = `// default.cpp - generated for your profile\n#include <iostream>\n\nint main(){\n    std::cout << "Hello from default.cpp!" << std::endl;\n    return 0;\n}\n`;
+
+    // ----------------
+    // DOM
+    // ----------------
+    const usernameIn = document.getElementById('username');
+    const passwordIn = document.getElementById('password');
+    const signupBtn = document.getElementById('signupBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const userList = document.getElementById('userList');
+    const openBtn = document.getElementById('openBtn');
+    const quickVisit = document.getElementById('quickVisit');
+
+    const profileView = document.getElementById('profileView');
+    const home = document.getElementById('home');
+    const profileName = document.getElementById('profileName');
+    const profileBio = document.getElementById('profileBio');
+    const cppPreview = document.getElementById('cppPreview');
+    const downloadCpp = document.getElementById('downloadCpp');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editorArea = document.getElementById('editorArea');
+    const bioInput = document.getElementById('bioInput');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const logoutLink = document.getElementById('logoutLink');
+    const homeLink = document.getElementById('homeLink');
+
+    // current session (managed client-side)
+    let session = {user: null};
+
+    function renderUserList(){
+      const users = loadUsers();
+      userList.innerHTML = Object.keys(users).length ? Object.keys(users).map(u=>`<div class="user-item"><span>/${u}</span><div><button data-u="${u}" class="visitBtn">Open</button></div></div>`).join('') : '<div class="small muted">No accounts yet</div>';
+      document.querySelectorAll('.visitBtn').forEach(b=>b.addEventListener('click',e=>openProfile(e.target.dataset.u)));
+    }
+
+    // Save a file and trigger download
+    function downloadFile(filename, text){
+      const blob = new Blob([text], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Open profile view for username
+    function openProfile(user){
+      user = sanitizeName(user);
+      const users = loadUsers();
+      if(!users[user]){ alert('User not found: ' + user); return; }
+      // update history and UI
+      history.pushState({page:'profile','user':user}, '', '/' + user);
+      showProfile(user);
+    }
+
+    function showProfile(user){
+      const users = loadUsers();
+      const u = users[user];
+      if(!u){ alert('Profile missing'); return; }
+      home.style.display = 'none';
+      profileView.style.display = 'block';
+      profileName.textContent = '/' + user;
+      profileBio.textContent = u.bio || 'No bio yet';
+      cppPreview.textContent = u.cpp || defaultCpp;
+      editorArea.style.display = 'none';
+      // show edit only if logged in as that user
+      if(session.user === user){ editProfileBtn.style.display='inline-block'; logoutLink.style.display='inline-block'; } else { editProfileBtn.style.display='none'; logoutLink.style.display='none'; }
+    }
+
+    function showHome(){
+      history.pushState({page:'home'}, '', '/');
+      profileView.style.display='none';
+      home.style.display='block';
+      logoutLink.style.display = session.user ? 'inline-block' : 'none';
+    }
+
+    // Signup
+    signupBtn.addEventListener('click', async ()=>{
+      const raw = usernameIn.value; const pw = passwordIn.value;
+      const user = sanitizeName(raw);
+      if(!user){ alert('Invalid username'); return; }
+      if(pw.length < 4){ alert('Password must be 4+ chars'); return; }
+      const users = loadUsers();
+      if(users[user]){ alert('Username taken'); return; }
+      const passHash = await hashPass(pw);
+      users[user] = {password: passHash, bio: '', cpp: defaultCpp};
+      saveUsers(users);
+      session.user = user;
+      alert('Account created! Redirecting to /' + user);
+      renderUserList();
+      openProfile(user);
+    });
+
+    // Login
+    loginBtn.addEventListener('click', async ()=>{
+      const raw = usernameIn.value; const pw = passwordIn.value;
+      const user = sanitizeName(raw);
+      if(!user){ alert('Invalid username'); return; }
+      const users = loadUsers();
+      if(!users[user]){ alert('User not found'); return; }
+      const passHash = await hashPass(pw);
+      if(passHash !== users[user].password){ alert('Wrong password'); return; }
+      session.user = user;
+      alert('Logged in as ' + user);
+      renderUserList();
+      openProfile(user);
+    });
+
+    openBtn.addEventListener('click', ()=>{
+      openProfile(quickVisit.value);
+    });
+
+    // Edit profile
+    editProfileBtn.addEventListener('click', ()=>{
+      editorArea.style.display='block';
+      bioInput.value = (loadUsers()[session.user].bio||'');
+    });
+    cancelEdit.addEventListener('click', ()=>{ editorArea.style.display='none'; });
+    saveProfileBtn.addEventListener('click', ()=>{
+      const users = loadUsers();
+      if(!session.user) return alert('Not logged in');
+      users[session.user].bio = bioInput.value;
+      users[session.user].cpp = users[session.user].cpp || defaultCpp;
+      saveUsers(users);
+      showProfile(session.user);
+      alert('Profile saved');
+    });
+
+    // Download default.cpp for current profile
+    downloadCpp.addEventListener('click', ()=>{
+      const users = loadUsers();
+      const user = profileName.textContent.replace('/','');
+      const content = (users[user] && users[user].cpp) ? users[user].cpp : defaultCpp;
+      downloadFile('default.cpp', content);
+    });
+
+    // Logout
+    logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); session.user=null; showHome(); alert('Logged out'); });
+    homeLink.addEventListener('click', (e)=>{ e.preventDefault(); showHome(); });
+
+    // Handle back/forward
+    window.addEventListener('popstate', (ev)=>{
+      const s = ev.state || {};
+      if(s.page === 'profile' && s.user) showProfile(s.user);
+      else showHome();
+    });
+
+    // On load: render users list and route if path contains username
+    (function init(){
+      renderUserList();
+      const path = location.pathname.replace(/^\//,'');
+      if(path){ // try to open /username
+        const users = loadUsers();
+        if(users[path]){ // profile exists
+          showProfile(path);
+          history.replaceState({page:'profile',user:path}, '', '/' + path);
+        } else {
+          // if user not found, go home but show the path as quick visit
+          quickVisit.value = path;
+        }
+      }
+    })();
+
+    // Expose a simple dev helper (optional)
+    window.__CP = {loadUsers, saveUsers, defaultCpp};
+  </script>
+</body>
+</html>
